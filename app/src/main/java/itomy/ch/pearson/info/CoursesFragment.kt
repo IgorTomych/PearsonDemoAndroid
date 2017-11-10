@@ -5,18 +5,21 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.widget.Toast
 import itomy.ch.pearson.R
 import itomy.ch.pearson.base.BaseFragment
 import itomy.ch.pearson.databinding.FragmentCoursesBinding
+import itomy.ch.pearson.dialogs.WarningDialog
 import itomy.ch.pearson.model.util.Status
 
-class CoursesFragment : BaseFragment<FragmentCoursesBinding>() {
+class CoursesFragment : BaseFragment<FragmentCoursesBinding>(), CoursesAdapter.OnItemClickListener {
 
     private lateinit var viewBinding: FragmentCoursesBinding
     private lateinit var adapter: CoursesAdapter
@@ -50,7 +53,7 @@ class CoursesFragment : BaseFragment<FragmentCoursesBinding>() {
         layoutManager = LinearLayoutManager(activity)
         viewBinding.recyclerView.layoutManager = layoutManager
         viewBinding.recyclerView.itemAnimator = DefaultItemAnimator()
-        adapter = CoursesAdapter()
+        adapter = CoursesAdapter(this)
         viewBinding.recyclerView.adapter = adapter
     }
 
@@ -81,5 +84,10 @@ class CoursesFragment : BaseFragment<FragmentCoursesBinding>() {
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onItemClickListener(v: View, pos: Int) {
+        val dialogFragment: DialogFragment = WarningDialog.newInstance()
+        dialogFragment.show(fragmentManager, WarningDialog.TAG)
     }
 }
