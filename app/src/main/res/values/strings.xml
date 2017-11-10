@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Pearson</string>
+
+    <!--activity_sign_in-->
+    <string name="activity_sign_in_terms_of_service">By signing in, you accept our %s.</string>
+    <string name="terms_of_service">Terms of Service</string>
+
+    <!--fragment_enter_username-->
+    <string name="fragment_enter_username_continue">continue</string>
+    <string name="fragment_enter_username_hint">Username</string>
+    <string name="fragment_sign_in_enter_password_hint">Enter password</string>
+    <string name="fragment_sign_in_sign_in">Sign in</string>
+
+    <!--sign_in_toolbar-->
+    <string name="sign_in_toolbar_back">back</string>
+
+    <!--fragment_my_account-->
+    <string name="fragment_my_account_button">SIGN OUT</string>
+    <string name="fragment_my_account_title">My Account</string>
+
+    <!--fragment_my_courses-->
+    <string name="fragment_my_courses_title">My Courses</string>
+    <string name="image_view_content_description">course image</string>
+
+    <!--warning_dialog-->
+    <string name="dialog_default_error_title">Alert</string>
+    <string name="dialog_default_error_description">Pending</string>
+</resources>
