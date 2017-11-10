@@ -21,7 +21,6 @@ class EnterUsernameFragment : BaseFragment<FragmentEnterUsernameBinding>(), View
         super.setupBindingData(viewBinding)
         this.viewBinding = viewBinding
         viewBinding.continueCallback = this
-
         getBaseActivity()?.getToolbar()?.findViewById<TextView>(R.id.backTextView)?.visibility = View.INVISIBLE
     }
 

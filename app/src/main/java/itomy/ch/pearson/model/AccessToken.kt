@@ -8,19 +8,18 @@ import com.google.gson.annotations.SerializedName
  */
 private const val TOKEN_PREF_KEY = "TOKEN_PREF_KEY"
 
-data class AccessToken(
+public data class AccessToken(
         @field:SerializedName("access_token")
         private val token: String) {
-
-    constructor(preferences: SharedPreferences) : this(preferences.getString(TOKEN_PREF_KEY, ""))
 
     public fun getHeader(): String {
         return "Bearer $token"
     }
 
     companion object {
-        fun createTokenFromPreferences(preferences: SharedPreferences): AccessToken {
-            return AccessToken(preferences)
+        fun createTokenFromPreferences(preferences: SharedPreferences): AccessToken? {
+            val token = preferences.getString(TOKEN_PREF_KEY, null)
+            return if (token == null) null else AccessToken(token)
         }
     }
 

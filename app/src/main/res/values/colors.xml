@@ -10,7 +10,7 @@
     <color name="colorButton">@color/colorPrimary</color>
     <color name="colorText">@color/colorPrimary</color>
 
-    <!--fragment_my_account-->
+    fragment_accountount-->
     <color name="colorUserName">#3a3c3d</color>
     <color name="colorUserEmail">#76797b</color>
 

@@ -2,6 +2,7 @@ package itomy.ch.pearson.repository
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
+import android.content.Context
 import itomy.ch.pearson.api.PearsonApiService
 import itomy.ch.pearson.api.PulseApiService
 import itomy.ch.pearson.model.AccessToken
@@ -9,29 +10,42 @@ import itomy.ch.pearson.model.AuthBody
 import itomy.ch.pearson.model.Course
 import itomy.ch.pearson.model.User
 import itomy.ch.pearson.model.util.Resource
+import itomy.ch.pearson.storage.Storage
 import okhttp3.ResponseBody
 
 /**
  * Created by Yegor on 11/10/17.
  */
-object Repository {
+class Repository private constructor(private val storage: Storage) {
 
-    //    todo save it to storage
-    private var token: AccessToken? = null
+    private var token: AccessToken? = storage.accessToken
     private val pearsonApiService by lazy {
         PearsonApiService.getInstance()
     }
 
+    companion object {
+        private var instance: Repository? = null
 
-    public fun authenticate(username: String, password: String): LiveData<Resource<AccessToken>> {
+        fun getInstance(context: Context): Repository {
+            return instance ?: Repository(Storage.Companion.getInstance(context)).also {
+                instance = it
+            }
+        }
+    }
+
+    fun isAuthorised(): Boolean {
+        return storage.accessToken != null
+    }
+
+    fun authenticate(username: String, password: String): LiveData<Resource<AccessToken>> {
         val liveData = MediatorLiveData<Resource<AccessToken>>()
         liveData.value = Resource.loading()
         val response = pearsonApiService.authenticate(AuthBody(username, password))
         liveData.addSource(response, {
             liveData.removeSource(response)
             liveData.value = if (it!!.isSuccessful) {
-//              todo save data to storage
-                token = it.body
+                token = it.body!!
+                storage.saveAccessToken(token!!)
                 Resource.success(it.body)
             } else {
                 Resource.error(it.errorMessage)
@@ -40,7 +54,7 @@ object Repository {
         return liveData
     }
 
-    public fun getCourses(): LiveData<Resource<List<Course>>> {
+    fun getCourses(): LiveData<Resource<List<Course>>> {
         val liveData = MediatorLiveData<Resource<List<Course>>>()
         liveData.value = Resource.loading()
         loadUser(liveData, {
@@ -63,42 +77,42 @@ object Repository {
 
     }
 
-    private fun loadUser(liveData: MediatorLiveData<Resource<List<Course>>>, success: (User?) -> Unit) {
-        if (token == null) {
-            liveData.value = Resource.error("User not authorized")
-        } else {
-            val user = pearsonApiService.getUser(token!!.getHeader())
-            liveData.addSource(user, {
-                liveData.removeSource(user)
-                it?.let {
-                    if (it.isSuccessful) {
-                        success.invoke(it.body)
-                    } else {
-                        liveData.value = Resource.error(it.errorMessage)
-                    }
-                }
-            })
-        }
+    public fun loadUser(): LiveData<Resource<User>> {
+        val liveData = MediatorLiveData<Resource<User>>()
+        liveData.value = Resource.loading()
+        loadUser(liveData, {
+            liveData.value = Resource.success(it)
+        })
+        return liveData
     }
 
+    private fun <T> loadUser(liveData: MediatorLiveData<Resource<T>>, success: (User?) -> Unit) {
+        val user = pearsonApiService.getUser(token!!.getHeader())
+        liveData.addSource(user, {
+            liveData.removeSource(user)
+            it?.let {
+                if (it.isSuccessful) {
+                    success.invoke(it.body)
+                } else {
+                    liveData.value = Resource.error(it.errorMessage)
+                }
+            }
+        })
+    }
 
-    public fun logout(): LiveData<Resource<ResponseBody>> {
+    fun logout(): LiveData<Resource<ResponseBody>> {
         val liveData = MediatorLiveData<Resource<ResponseBody>>()
         liveData.value = Resource.loading()
-        if (token == null) {
-            liveData.value = Resource.error("User not authorized")
-        } else {
-            val logout = pearsonApiService.logout(token!!.getHeader())
-            liveData.addSource(logout, {
-                liveData.removeSource(logout)
-                liveData.value = if (it!!.isSuccessful) {
-//                  todo remove access token
-                    Resource.success(it.body)
-                } else {
-                    Resource.error(it.errorMessage)
-                }
-            })
-        }
+        val logout = pearsonApiService.logout(token!!.getHeader())
+        liveData.addSource(logout, {
+            liveData.removeSource(logout)
+            liveData.value = if (it!!.isSuccessful) {
+                Resource.success(it.body)
+            } else {
+                Resource.error(it.errorMessage)
+            }
+        })
+        storage.logout()
         return liveData
     }
 }

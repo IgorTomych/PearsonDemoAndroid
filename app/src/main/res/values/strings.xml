@@ -14,11 +14,11 @@
     <!--sign_in_toolbar-->
     <string name="sign_in_toolbar_back">back</string>
 
-    <!--fragment_my_account-->
+    fragment_accountount-->
     <string name="fragment_my_account_button">SIGN OUT</string>
     <string name="fragment_my_account_title">My Account</string>
 
-    <!--fragment_my_courses-->
+    fragment_coursesrses-->
     <string name="fragment_my_courses_title">My Courses</string>
     <string name="image_view_content_description">course image</string>
 

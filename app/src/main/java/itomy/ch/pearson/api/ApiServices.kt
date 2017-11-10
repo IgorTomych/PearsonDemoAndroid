@@ -40,6 +40,7 @@ interface PearsonApiService {
         fun getInstance(): PearsonApiService {
             val retrofit = Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(LiveDataCallAdapterFactory())
                     .baseUrl(BASE_URL)
                     .client(createClient())
                     .build()

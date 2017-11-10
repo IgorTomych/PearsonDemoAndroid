@@ -8,12 +8,12 @@ private const val STORAGE_NAME = "STORAGE_NAME"
 
 class Storage private constructor(private val sharedPreferences: SharedPreferences) {
 
-    private val accessToken: AccessToken
+    val accessToken: AccessToken?
         get() = AccessToken.createTokenFromPreferences(sharedPreferences)
 
     fun saveAccessToken(token: AccessToken) {
         val editor = sharedPreferences.edit()
-        accessToken.putToStorage(editor)
+        token.putToStorage(editor)
         editor.apply()
     }
 

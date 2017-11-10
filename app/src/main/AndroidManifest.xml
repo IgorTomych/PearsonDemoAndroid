@@ -12,22 +12,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"/>
-
         <activity
             android:name=".signIn.SignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SignInAppTheme">
+            android:theme="@style/SignInAppTheme"/>
+
+        <activity
+            android:name=".info.CoursesActivity"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
         </activity>
-        <activity
-            android:name=".info.InfoActivity"
-            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
